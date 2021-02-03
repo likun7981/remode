@@ -1,6 +1,6 @@
 {
   "name": "remode",
-  "version": "0.0.2-beta.3",
+  "version": "0.1.0",
   "description": "Based on the hooks to achieve a lightweight state management plan",
   "sideEffects": false,
   "main": "dist/index.js",
