@@ -15,10 +15,10 @@
 
 ## 特性
 
-- **轻量** _基于react hooks实现，用React hooks管理你所有的状态_
+- **轻量** _基于react hooks实现，用React hooks管理你所有的状态，无其他依赖_
 - **更快** _会自动追踪state的变化，只有在state改变后才会进行重新渲染组件_
 - **易用** _只需三步可以直接使用_
-- **学习成本低** _仅仅使用了react，没有额外的学习成果_
+- **学习成本低** _仅仅使用了react，没有额外的学习成本_
 - **typescript支持友好** _代码推断更容易_
 
 
@@ -99,6 +99,10 @@ const LoginPage = () => {
   // 其他逻辑
 }
 ```
+
+## 相关
+
+- 参考来源 [@umi/plugin-model](https://github.com/umijs/plugins/tree/master/packages/plugin-model)，去除了依赖的umi底层的静态编译，任何react项目都可使用，进行了state更新优化
 
 ## LICENSE
 
