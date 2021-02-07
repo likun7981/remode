@@ -26,8 +26,6 @@ const init = <Models extends Record<string, any>>(models: Models) => {
     const [model, setModel] = useState(
       selectorRef.current ? selectorRef.current(data) : data,
     )
-    const previousRef = useRef(model)
-    previousRef.current = model
 
     useEffect(() => {
       const handler = (nextState: any) => {
@@ -39,7 +37,9 @@ const init = <Models extends Record<string, any>>(models: Models) => {
       // Synchronous model state after add the callback,
       // possible before add the callback was updated
       const currentData = store.data[namespace as string]
-      if (!compare(model, currentData)) {
+      const currentModel = selectorRef.current ? selectorRef.current(currentData) : currentData
+
+      if (!compare(model, currentModel)) {
         handler(currentData)
       }
       return store.addCallback(namespace as string, handler)
