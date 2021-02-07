@@ -26,8 +26,6 @@ const init = <Models extends Record<string, any>>(models: Models) => {
     const [model, setModel] = useState(
       selectorRef.current ? selectorRef.current(data) : data,
     )
-    const previousRef = useRef(model)
-    previousRef.current = model
 
     useEffect(() => {
       const handler = (nextState: any) => {
