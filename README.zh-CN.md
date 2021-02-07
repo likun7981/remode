@@ -42,12 +42,21 @@ $ yarn add remode
 ```ts
 // src/models/user.ts
 import { useState } from 'react';
-import { usePersistFn } from 'ahooks';
+
+
+// 通用的hooks，你也可以直接使用ahooks中的usePersistFn
+const usePersistCallback = <T extends Function>(callback: T) => {
+  const cbRef = useRef<Function>();
+
+  cbRef.current = callback;
+
+  return useCallback((...args) => cbRef.current!(...args), []);
+};
 
 function user() {
   const [userInfo, setUserInfo] = useState(null)
   // 这里函数持久化后，不会因为每次重新创建函数导致的额外渲染
-  const login = usePersistFn(() => {
+  const login = usePersistCallback(() => {
     // 登录逻辑逻辑
   })
   return {
@@ -80,7 +89,7 @@ export default initModels({
 import ReactDOM from 'react-dom'
 import Model from './models';
 
-// 这里需要在根元素挂载一次Provider; 该操作只需要执行一次
+// 在根元素挂载一次Provider;
 ReactDOM.render(
     <Model.Provider>
       // 其他元素
@@ -97,6 +106,16 @@ import Model from '../models';
 const LoginPage = () => {
   const { userInfo, login } = Model.useModel('user')
   // 其他逻辑
+}
+```
+
+
+## 调试
+您可以使用logger调试状态,将以下代码添加到文件`src/models/index.ts`;这样你就可以在控制台看到输出状态到控制台
+
+```ts
+if(process.env.NODE_ENV === 'development') {
+  Model.subscribe(require('remode/logger'))
 }
 ```
 

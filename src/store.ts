@@ -1,4 +1,3 @@
-// @ts-ignore
 import compare from "react-fast-compare"
 
 type CallbackManageType = Record<string, Array<Function> | undefined>
@@ -30,7 +29,7 @@ function createStore() {
         s(preState, nextState, namespace)
       })
     }
-    // 一个model 对比一次，如果没有改变则不触发callback更新
+    // Each namespace only contrast once
     if (!compare(preState, nextState)) {
       data[namespace] = nextState
       const cbs = callbacks[namespace]

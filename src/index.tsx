@@ -1,5 +1,6 @@
 import React, { FC, useState, useEffect, useRef, Fragment } from "react"
 import StateModel from "./state-model"
+import compare from "react-fast-compare"
 import createStore from "./store"
 
 export type Model<T extends Record<string, any>, K extends keyof T> = {
@@ -35,7 +36,15 @@ const init = <Models extends Record<string, any>>(models: Models) => {
         }
         setModel(nextState)
       }
+      // Synchronous model state after add the callback,
+      // possible before add the callback was updated
+      const currentData = store.data[namespace as string]
+      if (!compare(model, currentData)) {
+        handler(currentData)
+      }
       return store.addCallback(namespace as string, handler)
+      // Each namespace only add the callback once
+      // eslint-disable-next-line
     }, [namespace])
 
     return model

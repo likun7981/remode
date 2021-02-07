@@ -1,5 +1,5 @@
 # remode
-> **re**act **mode**l 使用hooks管理你的全局状态
+> **re**act **mode**l Use the hooks manage your global state
 
 [![NPM version][npm]][npm-url] [![NPM downloads][npm-download]][npm-download-url]
 
@@ -13,16 +13,15 @@
 
 --------------------
 
-## 特性
+## Features
 
-- **轻量** _基于react hooks实现，用React hooks管理你所有的状态，无其他依赖_
-- **更快** _会自动追踪state的变化，只有在state改变后才会进行重新渲染组件_
-- **易用** _只需三步可以直接使用_
-- **学习成本低** _仅仅使用了react，没有额外的学习成本_
-- **typescript支持友好** _代码推断更容易_
+- **lightweight** _Based on the React hooks to manage all of your state, no other dependencies_
+- **faster** _Automatically track the change of the state, only after the state change to re-render the component_
+- **easy** _Only three steps can be used directly, use only the react_
+- **typescript** _Make you write the React code more easily_
 
 
-## 安装
+## Install
 
 ```bash
 $ npm i -S remode
@@ -34,21 +33,29 @@ $ yarn add remode
 ```
 
 
-## 使用(仅需三步)
+## Use(Only three steps)
 
-1. 创建
-> 一个文件一个model，逻辑更清晰，维护更方便
+1. create the model
+> A file is a model, logic clearer, more convenient maintenance
 
 ```ts
 // src/models/user.ts
 import { useState } from 'react';
-import { usePersistFn } from 'ahooks';
+
+// This is a generic hooks
+const usePersistCallback = <T extends Function>(callback: T) => {
+  const cbRef = useRef<Function>();
+
+  cbRef.current = callback;
+
+  return useCallback((...args) => cbRef.current!(...args), []);
+};
 
 function user() {
   const [userInfo, setUserInfo] = useState(null)
-  // 这里函数持久化后，不会因为每次重新创建函数导致的额外渲染
-  const login = usePersistFn(() => {
-    // 登录逻辑逻辑
+  // Function after persistent here, won't lead to additional rendering
+  const login = usePersistCallback(() => {
+    // login logic
   })
   return {
     login,
@@ -57,8 +64,8 @@ function user() {
 }
 ```
 
-2. 初始化
-> 每个model拥有自己的命名空间
+2. init the model
+> Each model has its own namespace
 
 ```ts
 // src/models/index.ts
@@ -66,13 +73,16 @@ function user() {
 import initModels from 'remode';
 import userModel from './user';
 
-export default initModels({
+
+const Model = initModels({
   user: userModel,
   // otherNamespace: otherModel
 })
+
+export default Model
 ```
 
-3. 使用
+3. use the model
 
 ```ts
 // src/index.tsx
@@ -80,29 +90,38 @@ export default initModels({
 import ReactDOM from 'react-dom'
 import Model from './models';
 
-// 这里需要在根元素挂载一次Provider; 该操作只需要执行一次
+// The root element mount Provider once
 ReactDOM.render(
     <Model.Provider>
-      // 其他元素
+      // other element
     </Model.Provider>,
     document.getElementById('root')
 )
 
 
 
-// 具体使用
 // src/pages/login.tsx
 import Model from '../models';
 
 const LoginPage = () => {
   const { userInfo, login } = Model.useModel('user')
-  // 其他逻辑
+  // other logic
 }
 ```
 
-## 相关
+## Debug
+You can use a logger to debug your state, add the code the file `src/models/index.ts`;
+then you can see the output of the state in the console
 
-- 参考来源 [@umi/plugin-model](https://github.com/umijs/plugins/tree/master/packages/plugin-model)，去除了依赖的umi底层的静态编译，任何react项目都可使用，进行了state更新优化
+```ts
+if(process.env.NODE_ENV === 'development') {
+  Model.subscribe(require('remode/logger'))
+}
+```
+
+## Reference
+
+- [@umi/plugin-model](https://github.com/umijs/plugins/tree/master/packages/plugin-model)
 
 ## LICENSE
 
